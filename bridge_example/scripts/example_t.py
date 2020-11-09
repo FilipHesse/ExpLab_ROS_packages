@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 # Python libs
-import sys, time
+import sys
+import time
 
 # numpy and scipy
 import numpy as np
@@ -18,7 +19,8 @@ import rospy
 from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 
-VERBOSE=False
+VERBOSE = False
+
 
 class image_feature:
 
@@ -27,43 +29,38 @@ class image_feature:
         self.bridge = CvBridge()
         # topic where we publish
         self.image_pub = rospy.Publisher("/output/image_raw/compressed",
-            CompressedImage, queue_size=1)
+                                         CompressedImage, queue_size=1)
 
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera1/image_raw/compressed",
-            CompressedImage, self.callback,  queue_size = 1)
-        if VERBOSE :
-            print "subscribed to /raspicam_node/image/compressed"
-
+                                           CompressedImage, self.callback,  queue_size=1)
 
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-        if VERBOSE :
+        if VERBOSE:
             print 'received image of type: "%s"' % ros_data.format
 
         #### direct conversion to CV2 ####
         np_arr = np.fromstring(ros_data.data, np.uint8)
-        image_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # OpenCV >= 3.0:
+        image_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  # OpenCV >= 3.0:
 
-        
-        
-        (rows,cols,channels) = image_np.shape
-    	if cols > 60 and rows > 60 :
-      	    cv2.circle(image_np, (50,50), 50, 255)
-        
-        
+        (rows, cols, channels) = image_np.shape
+        if cols > 60 and rows > 60:
+            cv2.circle(image_np, (50, 50), 50, 255)
+
         cv2.imshow('window', image_np)
         cv2.waitKey(2)
-        
+
         msg = CompressedImage()
         msg.header.stamp = rospy.Time.now()
         msg.format = "jpeg"
         msg.data = np.array(cv2.imencode('.jpg', image_np)[1]).tostring()
         try:
             self.image_pub.publish(msg)
-	except CvBridgeError as e:
-	    print(e)
+        except CvBridgeError as e:
+            print(e)
+
 
 def main(args):
     '''Initializes and cleanup ros node'''
@@ -72,8 +69,9 @@ def main(args):
     try:
         rospy.spin()
     except KeyboardInterrupt:
-        print "Shutting down ROS Image feature detector module"
+        print ("Shutting down ROS Image feature detector module")
     cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     main(sys.argv)

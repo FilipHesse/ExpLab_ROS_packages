@@ -18,8 +18,8 @@ int main(int argc, char** argv){
     ROS_INFO("Waiting for the move_base action server to come up");
   }
   
-  int pos_x[4] = {3.0, 3.0, 0.0, 0.0};
-  int pos_y[4] = {0.0, 3.0, 3.0, 0.0};
+  double pos_x[4] = {3.0, 3.0, 0.0, 0.0};
+  double pos_y[4] = {0.0, 3.0, 3.0, 0.0};
 
   motion_plan::PlanningGoal goal;
   

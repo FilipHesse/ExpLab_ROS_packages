@@ -137,6 +137,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(${PROJECT_NAME}_node src/example.cpp)
  add_executable(${PROJECT_NAME}_node_t src/example_transport.cpp)
+ add_executable(random_robot src/random_robot.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,6 +158,10 @@ include_directories(
    ${catkin_LIBRARIES} ${OpenCV_LIBRARIES}
  )
 
+target_link_libraries(random_robot
+   ${catkin_LIBRARIES} 
+ )
+
 
 #############
 ## Install ##
@@ -168,7 +173,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  install(PROGRAMS
-   scripts/example_ball.py scripts/example.py scripts/example_t.py
+   scripts/example_ball.py scripts/example.py scripts/example_t.py scripts/robot_following.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
